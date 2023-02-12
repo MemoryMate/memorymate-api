@@ -5,6 +5,10 @@ const ReminderSchema = new Schema ({
         type: Boolean,
         required: true
     },
+    title:{
+        type: String,
+        required: true
+    },
     category: {
         type: String,
         required: true
