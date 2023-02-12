@@ -1,7 +1,7 @@
 const { Schema, model } = require('mongoose')
 
 const ReminderSchema = new Schema ({
-    isReocurring: {
+    isReoccuring: {
         type: Boolean,
         required: true
     },
