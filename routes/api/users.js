@@ -66,6 +66,19 @@ router.post('/set_token/:id', async (req, res)=>{
     }
 })
 
+router.post('/invite', async (req, res)=>{
+    const { phone } = req.body
+    try{
+        // var user = await User.findById(id)
+        console.log("token", req.body.token)
+        const response = await User.findByIdAndUpdate(id, {apnToken: req.body.token})
+        console.log("user", response)
+        res.status(200).json(response)
+    }catch(err){
+        res.status(500).json({ message: error.message})
+    }
+})
+
 router.post('/send_notification/:reminderid', async (req, res)=>{
 
     const { reminderid } = req.params
