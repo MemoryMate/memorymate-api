@@ -1,8 +1,21 @@
 const { Schema, model } = require('mongoose')
 
 const ReminderSchema = new Schema ({
-    isReocurring: {
+    
+    senderName:{
+        type: String,
+        required: true
+    },
+    senderImage:{
+        type: String,
+        required: true
+    },
+    isReoccuring: {
         type: Boolean,
+        required: true
+    },
+    title:{
+        type: String,
         required: true
     },
     category: {

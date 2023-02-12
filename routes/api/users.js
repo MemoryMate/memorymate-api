@@ -1,5 +1,6 @@
 const {Router} = require ('express')
 const User = require('../../models/User')
+const Reminder = require('../../models/Reminder')
 var apn = require('@parse/node-apn');
 const router = Router()
 
@@ -65,12 +66,26 @@ router.post('/set_token/:id', async (req, res)=>{
     }
 })
 
-router.post('/send_notification/:id', async (req, res)=>{
-
-    const { id } = req.params
+router.post('/invite', async (req, res)=>{
+    const { phone } = req.body
     try{
-        let user = await User.findById(id)
-        console.log(user)
+        // var user = await User.findById(id)
+        console.log("token", req.body.token)
+        const response = await User.findByIdAndUpdate(id, {apnToken: req.body.token})
+        console.log("user", response)
+        res.status(200).json(response)
+    }catch(err){
+        res.status(500).json({ message: error.message})
+    }
+})
+
+router.post('/send_notification/:reminderid', async (req, res)=>{
+
+    const { reminderid } = req.params
+    try{
+        let reminder = await Reminder.findById(reminderid);
+        let user = await User.findById(reminder.sendTo)
+        
         var token = user.apnToken;
         var options = {
             cert: __dirname + '/cert.pem',
@@ -89,8 +104,8 @@ router.post('/send_notification/:id', async (req, res)=>{
         note.expiry = Math.floor(Date.now() / 1000) + 3600;
         note.badge = 3;
         note.sound ="beep-beep.caf"
-        note.alert = "\uD83D\uDCE7 \u2709 hey chris";
-        note.payload = {'messageFrom': 'Caroline'};
+        note.alert = `\uD83D\uDCE7 \u2709 ${reminder.title}`;
+        note.payload = {...reminder};
         note.topic = "com.hackville.memorymates"
 
        return apnConnection.send(note, token).then( (result) => {
